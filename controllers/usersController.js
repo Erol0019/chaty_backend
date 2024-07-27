@@ -13,7 +13,7 @@ try {
         return res.json({ message: 'Email already exists', status: false });
        }
        const hashedPassword = await bcrypt.hash(password, 10);
-       const user = await create ({
+       const user = await User.create ({
            username,
            email,
            password: hashedPassword,
@@ -24,3 +24,40 @@ try {
         next(ex);
     }
 };
+
+module.exports.login = async (req, res, next) => {
+    try {
+        const { username, password } = req.body;
+        const user = await User.findOne({ username });
+        if (!user)
+         return res.json({ message: 'Incorrect username or password' , status: false});
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+            if(!isPasswordValid)
+                return res.json({ message: 'Incorrect username or password' , status: false});
+            delete user.password;
+           return res.json({ status: true, user });
+        } catch (ex) {
+            next(ex);
+        }
+    };
+    
+    module.exports.setAvatar = async (req, res, next) => {
+        try {
+          const userId = req.params.id;
+          const avatarImage = req.body.image;
+          const userData = await User.findByIdAndUpdate(
+            userId,
+            {
+              isAvatarImageSet: true,
+              avatarImage,
+            },
+            { new: true }
+          );
+          return res.json({
+            isSet: userData.isAvatarImageSet,
+            image: userData.avatarImage,
+          });
+        } catch (ex) {
+          next(ex);
+        }
+      };
