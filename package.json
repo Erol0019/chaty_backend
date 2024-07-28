@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "This is the backend of my Full-Stack project",
   "main": "index.js",
-  "scripts": {
-    
-  },
+  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
