@@ -3,9 +3,9 @@ const cors = require('cors');
 const mongoose = require('mongoose');  
 const userRoutes = require('./routes/userRoutes');
 const messageRoute = require('./routes/messagesRoute');  
+const app = express();
 const socket = require('socket.io');
 
-const app = express();
 require('dotenv').config();
 
 app.use(cors());
@@ -46,7 +46,7 @@ io.on("connection", (socket) => {
   socket.on("send-msg", (data) => {
     const sendUserSocket = onlineUsers.get(data.to);
     if(sendUserSocket){
-      socket.to(sendUserSocket).emit("receive-msg", data.message);
+      socket.to(sendUserSocket).emit("msg-recieve", data.message);
     }
   });
 });
