@@ -8,10 +8,16 @@ const socket = require('socket.io');
 
 require('dotenv').config();
 
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',  
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || '*', 
   credentials: true,
-}));
+};
+app.use(cors(corsOptions));
+
+
+app.use(cors(corsOptions));
+
+
 app.use(express.json());
 
 app.use('/api/auth', userRoutes);
@@ -31,11 +37,12 @@ const server = app.listen(process.env.PORT, () => {
 });
 
 const io = socket(server, {
-    cors: {
-        origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-        credentials: true,
-    },
+  cors: {
+      origin: process.env.FRONTEND_URL || '*', 
+      credentials: true,
+  },
 });
+
 
 global.onlineUsers = new Map();
 
