@@ -9,7 +9,7 @@ const socket = require('socket.io');
 require('dotenv').config();
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',  // Tillad anmodninger fra frontend
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',  
   credentials: true,
 }));
 app.use(express.json());
