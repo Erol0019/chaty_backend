@@ -8,7 +8,10 @@ const socket = require('socket.io');
 
 require('dotenv').config();
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',  // Tillad anmodninger fra frontend
+  credentials: true,
+}));
 app.use(express.json());
 
 app.use('/api/auth', userRoutes);
@@ -29,24 +32,28 @@ const server = app.listen(process.env.PORT, () => {
 
 const io = socket(server, {
     cors: {
-        origin: 'http://localhost:3000',
+        origin: process.env.FRONTEND_URL || 'http://localhost:3000',
         credentials: true,
     },
 });
 
 global.onlineUsers = new Map();
 
+//socket.io connection handler
 io.on("connection", (socket) => {
   global.chatSocket = socket;
+  
+  //when user is added
   socket.on("add-user", (userId) => {
     onlineUsers.set(userId, socket.id);
 
   });
 
+  //when message is sent
   socket.on("send-msg", (data) => {
     const sendUserSocket = onlineUsers.get(data.to);
     if(sendUserSocket){
-      socket.to(sendUserSocket).emit("msg-recieve", data.message);
+      socket.to(sendUserSocket).emit("msg-recieve", data.msg);
     }
   });
 });
