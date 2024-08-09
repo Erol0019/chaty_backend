@@ -24,13 +24,16 @@ app.use('/api/auth', userRoutes);
 app.use('/api/messages', messageRoute);
 
 mongoose.connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}). then(() => {
-    console.log('connected to mongodb');
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000,  // Timeout for at finde MongoDB server
+  socketTimeoutMS: 45000,  // Timeout for socket
+}).then(() => {
+  console.log('Connected to MongoDB');
 }).catch((err) => {
-    console.log(err.message);
+  console.log('Failed to connect to MongoDB:', err.message);
 });
+
 
 const server = app.listen(process.env.PORT, () => {
     console.log('server is running on port', process.env.PORT);
