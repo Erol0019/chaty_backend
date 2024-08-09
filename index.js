@@ -26,12 +26,24 @@ app.use('/api/messages', messageRoute);
 mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 5000,  // Timeout for at finde MongoDB server
-  socketTimeoutMS: 45000,  // Timeout for socket
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
 }).then(() => {
   console.log('Connected to MongoDB');
 }).catch((err) => {
   console.log('Failed to connect to MongoDB:', err.message);
+});
+
+mongoose.connection.on('connected', () => {
+  console.log('Mongoose connected to MongoDB');
+});
+
+mongoose.connection.on('error', (err) => {
+  console.log('Mongoose connection error:', err.message);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('Mongoose disconnected from MongoDB');
 });
 
 
